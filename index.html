@@ -151,10 +151,11 @@
         let bilinen = "";
 
         for (let i = 0; i < tahminler.length; i++) {
-          for (let j = 0; j < rastgeleSayilar < length; j++) {
+          for (let j = 0; j < rastgeleSayilar.length; j++) {
             if(tahminler[i] === rastgeleSayilar[j]) {
               adet++;
-              bilinen += tahminler[i];
+              bilinen += tahminler[i] + " ";
+              break;
             }
           }
         }
