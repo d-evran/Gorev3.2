@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Görev 3 - Soru 2</title>
+    <style>
+      body {
+        margin: 50px;
+      }
+      input:not([type="submit"]) {
+        width: 50px;
+      }
+
+      #bilgi {
+        display: none;
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Sayısal Loto Oyunu</h2>
+    <p>Aşağıdaki inputlara tahminlerini giriniz;</p>
+    <form onsubmit="tahminGir(event)">
+      <input type="number" name="tahmin1" id="tahmin1" onclick="ayniMi(this)" />
+      <input type="number" name="tahmin2" id="tahmin2" onclick="ayniMi(this)" />
+      <input type="number" name="tahmin3" id="tahmin3" onclick="ayniMi(this)" />
+      <input type="number" name="tahmin4" id="tahmin4" onclick="ayniMi(this)" />
+      <input type="number" name="tahmin5" id="tahmin5" onclick="ayniMi(this)" />
+      <input type="number" name="tahmin6" id="tahmin6" onclick="ayniMi(this)" />
+      <input type="submit" value="Tahmin Gir" id="tahminGirBtn" />
+    </form>
+
+    <br />
+    <p id="bilgi">Tahminler girildi.</p>
+    <hr />
+    <button id="kurayiCekBtn" onclick="kurayiCek()" disabled>Kurayi Cek</button>
+    <p>Loto Sayilari</p>
+    <input type="number" id="loto1" disabled readonly />
+    <input type="number" id="loto2" disabled readonly />
+    <input type="number" id="loto3" disabled readonly />
+    <input type="number" id="loto4" disabled readonly />
+    <input type="number" id="loto5" disabled readonly />
+    <input type="number" id="loto6" disabled readonly />
+    <br /><br />
+    <label id="bilinenSayilar"></label><br>
+    <label id="adet"></label>
+
+    <script>
+      function tahminlerArray() {
+        const tahmin1 = Number(document.getElementById("tahmin1").value);
+        const tahmin2 = Number(document.getElementById("tahmin2").value);
+        const tahmin3 = Number(document.getElementById("tahmin3").value);
+        const tahmin4 = Number(document.getElementById("tahmin4").value);
+        const tahmin5 = Number(document.getElementById("tahmin5").value);
+        const tahmin6 = Number(document.getElementById("tahmin6").value);
+
+        return tahminler = [
+          tahmin1,
+          tahmin2,
+          tahmin3,
+          tahmin4,
+          tahmin5,
+          tahmin6,
+        ];
+      }
+
+      function ayniMi(e) {
+        const tahminler = tahminlerArray();
+        const tahminDegerler = tahminler.filter((e) => e != 0);
+
+        let stop = false;
+        for (let i = 0; i < tahminDegerler.length; i++) {
+          for (let j = 0; j < tahminDegerler.length; j++) {
+            if (tahminDegerler[i] === tahminDegerler[j] && i != j) {
+              stop = true;
+              break;
+            }
+          }
+          if (stop) {
+            alert("Aynı tahmin bir kez girilebilir.");
+            break;
+          }
+        }
+        if (stop) {
+          inputSil(tahminDegerler.length);
+        }
+      }
+
+      function inputSil(Id) {
+        document.getElementById("tahmin" + Id).value = "";
+        document.getElementById("tahmin" + Id).focus();
+      }
+
+      function tahminGir(e) {
+        e.preventDefault();
+        const data = new FormData(e.target);
+        const inputlar = Object.fromEntries(data.entries());
+        let { tahmin1, tahmin2, tahmin3, tahmin4, tahmin5, tahmin6 } = inputlar;
+
+        let tahminler = [
+          Number(tahmin1),
+          Number(tahmin2),
+          Number(tahmin3),
+          Number(tahmin4),
+          Number(tahmin5),
+          Number(tahmin6),
+        ];
+
+        let dogruMu = true;
+        for (let i = 0; i < tahminler.length; i++) {
+          if (tahminler[i] < 1 || tahminler[i] > 49) {
+            dogruMu = false;
+            alert("1-49 sayıları arasında bir sayı girmelisiniz");
+            break;
+          }
+        }
+
+        if (dogruMu) {
+          document.getElementById("kurayiCekBtn").disabled = false;
+          document.getElementById("tahminGirBtn").disabled = true;
+          document.getElementById("bilgi").style.display = "block";
+
+          tahminler.sort(kucuktenBuyuge);
+          
+          for (let i = 1; i <= tahminler.length; i++) {
+            document.getElementById("tahmin" + i).value = tahminler[i - 1];
+          }
+        }
+      }
+
+      function kurayiCek() {
+        const rastgeleSayilar = [];
+        for (let i = 0; i < 6; i++) {
+          const sayi = Math.floor(Math.random() * 49) + 1;
+          if (!rastgeleSayilar.includes(sayi)) {
+            rastgeleSayilar.push(sayi);
+          } else i--;
+        }
+
+        rastgeleSayilar.sort(kucuktenBuyuge);
+
+        for (let i = 1; i <= 6; i++) {
+          document.getElementById("loto" + i).value = rastgeleSayilar[i - 1];
+        }
+
+        // kontrol
+        const tahminler = tahminlerArray();
+        let adet = 0;
+        let bilinen = "";
+
+        for (let i = 0; i < tahminler.length; i++) {
+          for (let j = 0; j < rastgeleSayilar < length; j++) {
+            if(tahminler[i] === rastgeleSayilar[j]) {
+              adet++;
+              bilinen += tahminler[i];
+            }
+          }
+        }
+        document.getElementById("bilinenSayilar").innerHTML = `Bilinen sayilar: ${bilinen}`;
+        document.getElementById("adet").innerHTML = `${adet} adet sayi bildiniz.`;
+      }
+
+      function kucuktenBuyuge(a,b) {
+        return a > b ? 1 : -1;
+      }
+    </script>
+  </body>
+</html>
